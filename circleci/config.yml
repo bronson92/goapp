@@ -29,11 +29,7 @@ dependencies:
     - gcloud config set project $GCLOUD_PROJECT
 version: 2
 jobs:
-  build:
-    docker:
-      # specify the version
-      - image: circleci/golang:1.9
-        deployment:
+  deployment:
     staging:
         branch: master
         commands:

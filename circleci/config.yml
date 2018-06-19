@@ -34,16 +34,16 @@ jobs:
         branch: master
         commands:
         # deploy to AppEngine
-        - gcloud -q app deploy app.yaml --promote --version=staging
+  
       
       
     working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
       - checkout
 
-      # specify any bash command here prefixed with `run: `
+      # specify any bash command 
+      - run: gcloud -q app deploy app.yaml --promote --version=2
       - run: go get -v -t -d ./...
-      - run: go test -v ./...
       
       
       

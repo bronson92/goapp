@@ -34,9 +34,11 @@ jobs:
       # specify the version
       - image: circleci/golang:1.9
       deployment:
-  production:
-    pre:
-      - pyenv global 2.7.12
+        staging:
+          branch: master
+            commands:
+        # deploy to AppEngine
+            - gcloud app deploy app.yaml
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images

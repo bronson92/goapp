@@ -1,39 +1,26 @@
 # Golang CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
-machine:
-  environment:
-    # Add app engine sdk to pythonpath for local unit tests.
-    PYTHONPATH: ${PYTHONPATH}:${HOME}/google_appengine
-
-    # Replace this with your project ID
-    GCLOUD_PROJECT: "iac-poc-tf-9379992"
-
-dependencies:
-  pre:
-    # Download App Engine SDK
-    # This is not necessary to deploy, its only necessary  to run local tests importing the App Engine SDK
-    - curl -o $HOME/google_appengine_1.9.30.zip https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.30.zip
-    - unzip -q -d $HOME $HOME/google_appengine_1.9.30.zip
-    # Retrieve our secrets from the CircleCI environment
-    - echo $CLIENT_SECRET | base64 --decode > ${HOME}/circlekey.json
-    - sed  s/YOUR-API-KEY/$API_KEY/ api_key.py.sample > api_key.py
-    # vendor our dependencies
-    - mkdir -p lib
-    - pip install -r requirements.txt -t lib
-    # Make sure gcloud is up to date
-    - gcloud --quiet components update app
-    # authenticate gcloud
-    - gcloud auth activate-service-account --key-file ${HOME}/jenkins.json
-    # Replace <your-project-id>
-    - gcloud config set project $GCLOUD_PROJECT
-    
-  deployment:
-    staging:
-      branch: master
-        commands:
-        # deploy to AppEngine
-        - gcloud -q app deploy app.yaml --promote --version=staging      
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.9
       
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
 
-     
+    #### TEMPLATE_NOTE: go expects specific checkout path representing url
+    #### expecting it in the form of
+    ####   /go/src/github.com/circleci/go-tool
+    ####   /go/src/bitbucket.org/circleci/go-tool
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: go get -v -t -d ./...
+      - run: go test -v ./...

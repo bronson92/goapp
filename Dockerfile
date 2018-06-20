@@ -1,6 +1,6 @@
 FROM golang:alpine
 
-ARG pkg=github.com/GoogleCloudPlatform/golang-samples/getting-started/bookshelf
+ARG pkg=https://github.com/bronson92/goapp
 
 RUN apk add --no-cache ca-certificates
 

@@ -1,5 +1,5 @@
 FROM golang:latest
-COPY . /webapp
+COPY ./webapp
 WORKDIR  /webapp
 RUN mkdir src && \
     mkdir pkg && \
